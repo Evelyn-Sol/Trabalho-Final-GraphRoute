@@ -1,57 +1,128 @@
 #include <cstdlib>
-#include <bits/stdc++.h>
+#include <unordered_set>
+#include <unordered_map>
+#include <fstream>
+#include <iostream>
 
 namespace na{ //Esse é outro nome que será necessário mudar
 template <typename T>
 class funcoes{
 private:
-    struct node{
+    struct node
+    {
         T value;
-        std::unordered_set<node *> links;
+        std::unordered_set<node*> links;
     };
+
     std::unordered_map<T, node> grafo;
     
-    node *find(const T &val){
+    node *find(const T& val)
+    {
         auto it = grafo.find(val);
         if (it == grafo.end()){
             return nullptr;
         }
         return &it->second;
     }
-public:
 
-    void insere_nodo(const T &val){
-        if (grafo.count(val) != 0)
+public:
+    void insere_nodo(const T& val)
+    {
+        if(grafo.count(val) != 0)
             return;
         node aux;
         aux.value = val;
         grafo[val] = aux;
     }
 
-    void load(const std::string &filename){
+    //le o arquivo de entrada e armazenas as vertices diferentes e escreve o no arquivo rede no formato padrão para a a função load
+    //abs(falta implementar o total de arestas e escrevelas no padrao do rede.txt)
+    void leitura(const std::string& filename)
+    {
         std::ifstream arq(filename);
-        if(!arq) return;
+        std::unordered_set<std::string> total_vertices;
+        std::string linha;
+        std::getline(arq, linha); 
+
+        while(std::getline(arq, linha)){
+            if(linha.empty()) continue; 
+
+            int contador_virgulas = 0;
+            std::string endereco_hop_from = "";
+            std::string endereco_hop_to = "";
+
+            for(char c : linha){
+                if(c == ','){
+                    contador_virgulas++;
+                    continue;
+                }
+                if (contador_virgulas == 4) {
+                    endereco_hop_from += c;
+                }
+                else if (contador_virgulas == 5) {
+                    endereco_hop_to += c; 
+                }
+                else if (contador_virgulas > 5) {
+                    break; 
+                }
+            }
+
+            if(!endereco_hop_from.empty() && !endereco_hop_to.empty()) {
+                if(endereco_hop_to != "*") {
+                    total_vertices.insert(endereco_hop_from);
+                    total_vertices.insert(endereco_hop_to);
+                }
+            }
+        }
+        std::cout << "Vértices únicos (IPs): " << total_vertices.size() << " | Arestas: " << "\n";
+
+        std::ofstream txt("rede.txt");
+        txt << total_vertices.size() << "\n";
+        for(std::string s : total_vertices){
+            txt << s << "\n";
+        }
 
         arq.close();
     }
 
-    void show()
-        {
-            std::ofstream dot("/tmp/nahuy.dot");
-            dot << "digraph{\n";
-            for (const auto &[k, n] : grafo)
-            {
-                dot << "\t\"" << k << "\" -> {";
-                for (const auto &link : n.links)
-                {
-                    dot << "\"" << link->value << "\" ";
-                }
-                dot << " };\n";
-            }
-            dot << "}\n";
-            dot.close();
-            system("dot -Tx11 /tmp/nahuy.dot");
+    //função que le o arquivo rede.txt e cria os nodos(implemantar a inserção dos links)
+    void load(const std::string& filename)
+    {
+        std::ifstream in(filename);
+        if(!in){
+            return;
         }
+        int n;
+        in >> n;
+        in.ignore();
+        std::string line, line2;
+        while (n--) {
+            getline(in, line);
+            insere_nodo(line);
+        }
+
+        in.close();
+    }
+
+    void show()
+    {
+        std::ofstream dot("nahuy.dot");
+        dot << "digraph{\n";
+        for (const auto &[k, n] : grafo){
+            dot << "\t\"" << k << "\" -> {";
+            for (const auto &link : n.links){
+                dot << "\"" << link->value << "\" ";
+            }
+            dot << " };\n";
+        }
+        dot << "}\n";
+        dot.close();
+
+        system("dot -Tpng nahuy.dot -o grafo.png"); // comandos do windows
+        system("start grafo.png");
+
+        //system("dot -Tx11 nahuy.dot"); // comando linux
+    }
 
     /*std::vector<node *> shortest_path(const T& inicio, const T& fim){
             std::vector<node *> caminho;

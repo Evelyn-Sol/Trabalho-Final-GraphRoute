@@ -1,10 +1,9 @@
 #include <iostream>
 #include "funcoes.cpp" //Por favor, sugiram um nome melhor para o arquivo com as funções
-#include <bits/stdio.h> //Se quiserem tirar esse daqui, à vontade, mas se fizerem isso, vcs vão ter q adicionar as
-                        // bibliotecas manualente
+
 using namespace std;
 
-void selecaoFormato(na::funcoes<int> &tipo){
+void selecaoFormato(na::funcoes<string> &tipo){
     int formato;
     cout << "Selecione o formato de saída do Graphviz:\n";
     cout << "1. Tela\n";
@@ -14,7 +13,7 @@ void selecaoFormato(na::funcoes<int> &tipo){
     
     switch (formato){
     case 1:
-        tipo.show();
+        tipo.show(); //obs(Dar zoom na imagem)
         break;
     case 2:
         /*Falta implementar o formato PNG*/
@@ -29,23 +28,25 @@ void selecaoFormato(na::funcoes<int> &tipo){
 }
 
 int main(int argc, char* argv[]){
-    if (argc < 2){
-        std::cerr << "Deve-se inserir o executável e o arquivo de entrada da seguinte forma: \"" << argv[0] << "\" \"arquivo\"\n"; 
+    if(argc < 2) {
+        cout << "Erro: nome do arquivo não recebido\n";
+        return 1; 
+    }
+
+    string nome_arquivo;
+    ifstream arq(nome_arquivo = argv[1]);
+    if(!arq){
+        cout << "Erro: nao foi possivel abrir o arquivo\n"; 
         return 1;
     }
 
-    std::ifstream file(argv[1]);
-
-    if(file){
-        std::cout << "Grafo de roteamento inicializado!\n";
-        std::cout << "Vértices únicos (IPs):  | Arestas: \n";
-    } else {
-        std::cerr << "Não foi possível abrir o arquivo!\n"; //Tratamento de erro
-        return 0;
-    }
+    cout << "Grafo de roteamento inicializado!\n";
+    
+    na::funcoes<string> rede;
+    rede.leitura(nome_arquivo);
+    rede.load("rede.txt");
 
     int opcao;
-    na::funcoes<int> m;
 
     while(true){
         cout << "======================================================\n";
@@ -57,24 +58,25 @@ int main(int argc, char* argv[]){
         cout << "======================================================\n";
         cout << "Escolha uma opção: "; cin >> opcao;
     switch (opcao){
-    case 0:
-        return 0;
-    break;
-    case 1:
-        selecaoFormato(m);
-    break;
-    case 2:
-        /*A implementar*/
-    break;
-    case 3:
-        /*A implementar*/
-    break;
-    case 4:
-        /*A implementar*/
-    break;
-    
-    default:
-        cout << "Opção Inválida! Tente Novamente.\n";
-    }
+        case 0:
+            return 0;
+            break;
+        case 1:
+            selecaoFormato(rede);
+            break;
+        case 2:
+            /*A implementar*/
+            break;
+        case 3:
+            /*A implementar*/
+            break;
+        case 4:
+            /*A implementar*/
+            break;
+        
+        default:
+            cout << "Opção Inválida! Tente Novamente.\n";
+            break;
+        }
     }
 }
