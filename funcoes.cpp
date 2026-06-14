@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 namespace na{ //Esse é outro nome que será necessário mudar
 template <typename T>
@@ -35,12 +36,28 @@ public:
         grafo[val] = aux;
     }
 
-    //le o arquivo de entrada e armazenas as vertices diferentes e escreve o no arquivo rede no formato padrão para a a função load
-    //abs(falta implementar o total de arestas e escrevelas no padrao do rede.txt)
+    void insert_link(const T& from, const T& to)
+    {
+        auto pfrom = find(from);
+        if (!pfrom)
+            return;
+        auto pto = find(to);
+        if (!pto)
+            return;
+
+        pfrom->links.insert(pto);
+    }
+
     void leitura(const std::string& filename)
     {
+        struct aresta{
+            std::string origem;
+            std::string destino;
+        };
+
         std::ifstream arq(filename);
         std::unordered_set<std::string> total_vertices;
+        std::vector<aresta> arestas;
         std::string linha;
         std::getline(arq, linha); 
 
@@ -71,21 +88,24 @@ public:
                 if(endereco_hop_to != "*") {
                     total_vertices.insert(endereco_hop_from);
                     total_vertices.insert(endereco_hop_to);
+                    arestas.push_back({endereco_hop_from, endereco_hop_to});
                 }
             }
         }
-        std::cout << "Vértices únicos (IPs): " << total_vertices.size() << " | Arestas: " << "\n";
+        std::cout << "Vértices únicos (IPs): " << total_vertices.size() << " | Arestas: " << arestas.size() << "\n";
 
         std::ofstream txt("rede.txt");
         txt << total_vertices.size() << "\n";
         for(std::string s : total_vertices){
             txt << s << "\n";
         }
+        for(const auto& a : arestas){
+            txt << a.origem << "\n" << a.destino << "\n";
+        }
 
         arq.close();
     }
 
-    //função que le o arquivo rede.txt e cria os nodos(implemantar a inserção dos links)
     void load(const std::string& filename)
     {
         std::ifstream in(filename);
@@ -99,6 +119,9 @@ public:
         while (n--) {
             getline(in, line);
             insere_nodo(line);
+        }
+        while (getline(in, line) && getline(in, line2)) {
+            insert_link(line, line2);
         }
 
         in.close();

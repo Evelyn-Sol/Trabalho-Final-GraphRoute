@@ -13,7 +13,7 @@ void selecaoFormato(na::funcoes<string> &tipo){
     
     switch (formato){
     case 1:
-        tipo.show(); //obs(Dar zoom na imagem)
+        tipo.show(); 
         break;
     case 2:
         /*Falta implementar o formato PNG*/
