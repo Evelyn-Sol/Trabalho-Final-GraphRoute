@@ -6,7 +6,12 @@ using namespace std;
 
 void selecaoFormato(na::funcoes<int> &tipo){
     int formato;
-    cout << "Selecione um formato: "; cin >> formato;
+    cout << "Selecione o formato de saída do Graphviz:\n";
+    cout << "1. Tela\n";
+    cout << "2. Imagem (PNG)\n";
+    cout << "3. Documento (PDF)\n";
+    cout << "Opção: "; cin >> formato;
+    
     switch (formato){
     case 1:
         tipo.show();
@@ -18,13 +23,26 @@ void selecaoFormato(na::funcoes<int> &tipo){
         /*E o PDF também*/
         break;
     default:
-        cout << "Opção Inválida! \n";
+        cout << "Opção Inválida!\n";
         break;
     }
-    
 }
 
-int main(){
+int main(int argc, char* argv[]){
+    if (argc < 2){
+        std::cerr << "Deve-se inserir o executável e o arquivo de entrada da seguinte forma: \"" << argv[0] << "\" \"arquivo\"\n"; 
+        return 1;
+    }
+
+    std::ifstream file(argv[1]);
+
+    if(file){
+        std::cout << "Grafo de roteamento inicializado!\n";
+        std::cout << "Vértices únicos (IPs):  | Arestas: \n";
+    } else {
+        std::cerr << "Não foi possível abrir o arquivo!\n"; //Tratamento de erro
+        return 0;
+    }
 
     int opcao;
     na::funcoes<int> m;
@@ -56,7 +74,7 @@ int main(){
     break;
     
     default:
-        cout << "Opção Inválida! Tente Novamente. \n";
+        cout << "Opção Inválida! Tente Novamente.\n";
     }
     }
 }
