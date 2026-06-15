@@ -1,9 +1,12 @@
 #include <cstdlib>
 #include <unordered_set>
+#include <set>
 #include <unordered_map>
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <algorithm>
 
 namespace na{ //Esse é outro nome que será necessário mudar
 template <typename T>
@@ -127,7 +130,7 @@ public:
         in.close();
     }
 
-    void show()
+    /*void show()
     {
         std::ofstream dot("nahuy.dot");
         dot << "digraph{\n";
@@ -145,48 +148,90 @@ public:
         system("start grafo.png");
 
         //system("dot -Tx11 nahuy.dot"); // comando linux
+    }*/
+
+    bool verticeexiste(const T& ip){
+        if(!find(ip)){
+            return false;
+        }
+        return true;
     }
 
-    /*std::vector<node *> shortest_path(const T& inicio, const T& fim){
-            std::vector<node *> caminho;
+    std::vector<T> shortest_path(const T& inicio, const T& fim){
+            std::vector<T> caminho;//vetor do caminho
             auto c = find(inicio);
             if (!c) return caminho;
 
             auto f = find(fim);
             if (!f) return caminho;
 
-            std::queue<node *> q;
-            std::unordered_set<node *> enfileirados;
-            std::unordered_map<node *, node *> origem;
-            q.push(c);
-            enfileirados.insert(c);
-            origem[c] = nullptr;
-            bool found = false;
-            while (!q.empty()){
-                auto atual = q.front();
-                q.pop();
-                if (atual == f){
-                    found = true;
-                    break;
+            std::queue<node *> q;//cria uma fila de ponteiro
+            std::unordered_set<node *> enfileirados;//cria um unordere_set para os nodos já visitados
+            std::unordered_map<node *, node *> origem;//unordered_map que registra de onde veio o nodo
+            q.push(c);//adiciona o nodo na fila
+            enfileirados.insert(c);//insere o nodo do unordered_set
+            origem[c] = nullptr;//no unordered map define a origem como c e o antes dele null, já que ele é o ponto de partida
+            bool found = false;//variavel booleana inicia com false
+            while (!q.empty()){//enquanto a fila não estiver vazia
+                auto atual = q.front();//variavel atual recebe o primeiro nodo inserido na fila
+                q.pop();//exclui ele da fila
+                if (atual == f){//compara se o atual é f que é a variavel que recebe o nodo final, se achou
+                    found = true;//variavel booleana fica true
+                    break;//sai do laço
                 }
-                for(auto adj : atual->links){
-                    if (enfileirados.count(adj) == 0)
+                for(auto adj : atual->links){//aqui percorremos as arestas da variavel atual, que enquanto a fila nao for vazia, vai se modificando
+                    if (enfileirados.count(adj) == 0){//adiciona os vizinhos no unordered_set que verifica se o nodo já foi visitado
                         q.push(adj);
                         enfileirados.insert(adj);
-                        origem[adj] = atual;
-                }
-                if (found){
-                    auto p = f;
-                    while (p){
-                        caminho.push_back(p);
-                        std::cout << p->value << " ";
-                        p = origem[p];
+                        origem[adj] = atual;//registra de onde esse nodo veio
                     }
-                std::cout << "\n";
                 }
             }
-            std::reverse(caminho.begin(), caminho.end());
+            if (found){//se encontrou
+                    auto p = f;
+                    while (p){//volta do inicio ate o fim
+                        caminho.push_back(p->value); //adiciona no vetor
+                        p = origem[p];
+                    }
+                }
+            std::reverse(caminho.begin(), caminho.end());//inverte o caminho
             return caminho;
-        }*/
-    };
+        }
+
+    void gerarDot(const std::vector<T>& caminho = {}) { //gera o .dot completo e o com caminho destacado
+        bool temCaminho = !caminho.empty();//.empty retorna um booleano que inicia nesse caso com false
+
+        std::ofstream dot("input.dot");//gera o .dot padronizado para o nome input.dot para ambos
+        dot << "digraph{\n";
+
+        std::set<std::pair<T,T>> arestas_caminho;//aqui vai criar um set que armazena os pares que tem arestas no caminho
+
+        if (temCaminho) { //se tem caminho cria as ligações dos nos, as arestas
+            for (size_t i = 0; i < caminho.size() - 1; i++) {
+                arestas_caminho.insert({caminho[i], caminho[i+1]});
+            }
+        }
+
+        for (const auto &[k, n] : grafo) {//percorre o grafo
+            for (const auto &link : n.links) {//percorre as arestas
+
+                if (temCaminho && arestas_caminho.count({k, link->value})) {//se existe caminho verifica se a aresta faz parte do caminho, se faz destaca
+                    dot << "\"" << k << "\" -> \"" << link->value
+                        << "\" [color=red, penwidth=3.0];\n";//aresta destacada de vermelho
+                } else {
+                    dot << "\"" << k << "\" -> \"" << link->value << "\";\n";//assim desenha normal sem destacar
+                }
+            }
+        }
+
+        if (temCaminho) {//se tem caminho
+            for (const auto &ip : caminho) {//percorre os nos do grafo
+                dot << "\"" << ip << "\" [color=red, penwidth=3.0];\n";//destaca eles
+            }
+        }
+
+        dot << "}\n";
+        dot.close();//fecha grafo
+    }
+};
 }
