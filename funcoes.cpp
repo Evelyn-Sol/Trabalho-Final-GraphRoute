@@ -53,14 +53,12 @@ public:
 
     void leitura(const std::string& filename)
     {
-        struct aresta{
-            std::string origem;
-            std::string destino;
-        };
+        using aresta = std::pair<std::string, std::string>; // chama uma aresta que recebe um par de strings
 
-        std::ifstream arq(filename);
-        std::unordered_set<std::string> total_vertices;
-        std::vector<aresta> arestas;
+        std::ifstream arq(filename); //abre o arquivo passado
+        std::unordered_set<std::string> total_vertices; //cria um set 
+        std::set<aresta> arestas;
+
         std::string linha;
         std::getline(arq, linha); 
 
@@ -91,7 +89,8 @@ public:
                 if(endereco_hop_to != "*") {
                     total_vertices.insert(endereco_hop_from);
                     total_vertices.insert(endereco_hop_to);
-                    arestas.push_back({endereco_hop_from, endereco_hop_to});
+
+                    arestas.insert({endereco_hop_from, endereco_hop_to});
                 }
             }
         }
@@ -103,10 +102,11 @@ public:
             txt << s << "\n";
         }
         for(const auto& a : arestas){
-            txt << a.origem << "\n" << a.destino << "\n";
+            txt << a.first << "\n" << a.second << "\n";
         }
 
         arq.close();
+        txt.close();
     }
 
     void load(const std::string& filename)
@@ -129,26 +129,6 @@ public:
 
         in.close();
     }
-
-    /*void show()
-    {
-        std::ofstream dot("nahuy.dot");
-        dot << "digraph{\n";
-        for (const auto &[k, n] : grafo){
-            dot << "\t\"" << k << "\" -> {";
-            for (const auto &link : n.links){
-                dot << "\"" << link->value << "\" ";
-            }
-            dot << " };\n";
-        }
-        dot << "}\n";
-        dot.close();
-
-        system("dot -Tpng nahuy.dot -o grafo.png"); // comandos do windows
-        system("start grafo.png");
-
-        //system("dot -Tx11 nahuy.dot"); // comando linux
-    }*/
 
     bool verticeexiste(const T& ip){
         if(!find(ip)){
@@ -226,7 +206,13 @@ public:
 
         if (temCaminho) {//se tem caminho
             for (const auto &ip : caminho) {//percorre os nos do grafo
-                dot << "\"" << ip << "\" [color=red, penwidth=3.0];\n";//destaca eles
+                dot << "\"" << ip << "\" [color=black, penwidth=3.0, style=filled, fillcolor=palegreen];\n";//destaca eles
+                if(ip == caminho[0]){
+                    dot << "\"" << ip << "\" [color=black, penwidth=3.0, style=filled, fillcolor=palegreen3];\n";//destaca eles
+                }
+                if(ip == caminho.back()){
+                    dot << "\"" << ip << "\" [color=black, penwidth=3.0, style=filled, fillcolor=tomato3];\n";//destaca eles
+                }
             }
         }
 

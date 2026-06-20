@@ -13,7 +13,7 @@ void selecaoFormato(const std::string &tipo, const std::string &nomearquivo){
     
     switch (formato){
     case 1:
-        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str()); 
+        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str()); // mudar para o formato linux
         system(("start " + nomearquivo + ".png").c_str());
         cout << "Arquivo " << nomearquivo << " gerado com sucesso!\n";
         break;
@@ -108,7 +108,6 @@ int main(int argc, char* argv[]){
         }
         case 3:
             cout << "O diametro do grafo e: " << rede.calculaDiametro() << " saltos.\n";
-            /*A implementar*/
             break;
         case 4:
             /*A implementar*/
