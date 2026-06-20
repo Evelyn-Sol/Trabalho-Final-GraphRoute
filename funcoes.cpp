@@ -233,5 +233,36 @@ public:
         dot << "}\n";
         dot.close();//fecha grafo
     }
+
+     int calculaDiametro(){
+        int diametroMaximo = 0;//cria variavel global
+        for(const auto& [ip, nodo] : grafo){//percorre os nodos do grafo
+            int maiorDiametro = 0;//variavel para comparacao interna
+            std::queue<std::pair <node *, int>> q;//lista de pares com nodo e distancia do nodo
+            std::unordered_map<node*, bool> visitados;//unordered_map com visitados
+            node* verifica = find(ip);//variavel que pega o find ip para uma variavel de nodo
+            q.push({verifica, 0});//insere na lista o verifica, que é o nodo, e a distancia do nodo de origem
+            visitados.insert({verifica, true});
+            while (!q.empty()){//enquanto não estiver vazio
+                auto atual = q.front().first;
+                auto distanciaAtual = q.front().second;
+                if(distanciaAtual > maiorDiametro){//comparacao
+                    maiorDiametro = distanciaAtual;//atualiza variavel
+                }
+                q.pop();
+                for(auto adj : atual->links){
+                    if (visitados.count(adj) == 0){//mesma coisa de shortest path
+                        q.push({adj, distanciaAtual + 1});//adicona distancia
+                        visitados.insert({adj, true});
+                    }
+                }
+            }
+            if(maiorDiametro > diametroMaximo){//comparacao com variavel interna e externa
+                diametroMaximo = maiorDiametro;
+            }
+        }
+        return diametroMaximo;
+    }
+
 };
 }

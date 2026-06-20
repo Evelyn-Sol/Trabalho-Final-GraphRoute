@@ -3,26 +3,28 @@
 
 using namespace std;
 
-void selecaoFormato(const std::string &tipo){
+void selecaoFormato(const std::string &tipo, const std::string &nomearquivo){
     int formato;
     cout << "Selecione o formato de saida do Graphviz:\n";
     cout << "1. Tela\n";
     cout << "2. Imagem (PNG)\n";
     cout << "3. Documento (PDF)\n";
-    cout << "Opção: "; cin >> formato;
+    cout << "Opcao: "; cin >> formato;
     
     switch (formato){
     case 1:
-        system(("dot -Tpng " + tipo + " -o grafo.png").c_str()); // comandos do windows
-        system("start grafo.png");
+        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str()); 
+        system(("start " + nomearquivo + ".png").c_str());
+        cout << "Arquivo " << nomearquivo << " gerado com sucesso!\n";
         break;
     case 2:
-        system(("dot -Tpng " + tipo + " -o saida.png").c_str());
-        system("start saida.png");
+        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str());
+        cout << "Arquivo " << nomearquivo << ".png gerado com sucesso!\n";
         break;
     case 3:
-        system(("dot -Tpdf " + tipo + " -o saida.pdf").c_str());
-        system("start saida.pdf");
+        system(("dot -Tpdf " + tipo + " -o " + nomearquivo + ".pdf").c_str());
+        system(("start " + nomearquivo + ".pdf").c_str());
+        cout << "Arquivo " << nomearquivo << ".pdf gerado com sucesso!\n";
         break;
     default:
         cout << "Opcao Invalida!\n";
@@ -66,7 +68,7 @@ int main(int argc, char* argv[]){
             break;
         case 1:
             rede.gerarDot();
-            selecaoFormato("input.dot");
+            selecaoFormato("input.dot", nome_arquivo);
             break;
         case 2:{
             string origem;//cria string que vai receber o ip de origem
@@ -100,11 +102,12 @@ int main(int argc, char* argv[]){
                     }
                 }
                 rede.gerarDot(resultado);//chama a funcao gerar dot que cria o .dot do caminho
-                selecaoFormato("input.dot");//chama a função selecao formato para escolher o formato de saida do arquivo
+                selecaoFormato("input.dot", nome_arquivo);//chama a função selecao formato para escolher o formato de saida do arquivo
                 break;
             }
         }
         case 3:
+            cout << "O diametro do grafo e: " << rede.calculaDiametro() << " saltos.\n";
             /*A implementar*/
             break;
         case 4:
