@@ -1,5 +1,5 @@
 #include <iostream>
-#include "funcoes.cpp" //Por favor, sugiram um nome melhor para o arquivo com as funções
+#include "funcoes.cpp"
 
 using namespace std;
 
@@ -13,9 +13,7 @@ void selecaoFormato(const std::string &tipo, const std::string &nomearquivo){
     
     switch (formato){
     case 1:
-        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str()); // mudar para o formato linux
-        system(("start " + nomearquivo + ".png").c_str());
-        cout << "Arquivo " << nomearquivo << " gerado com sucesso!\n";
+        system(("dot -Tx11 " + tipo).c_str());
         break;
     case 2:
         system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str());
@@ -23,7 +21,7 @@ void selecaoFormato(const std::string &tipo, const std::string &nomearquivo){
         break;
     case 3:
         system(("dot -Tpdf " + tipo + " -o " + nomearquivo + ".pdf").c_str());
-        system(("start " + nomearquivo + ".pdf").c_str());
+        //system(("xdg-open " + nomearquivo + ".pdf").c_str()); Precisa mesmo abrir isso aqui?
         cout << "Arquivo " << nomearquivo << ".pdf gerado com sucesso!\n";
         break;
     default:
@@ -110,7 +108,8 @@ int main(int argc, char* argv[]){
             cout << "O diametro do grafo e: " << rede.calculaDiametro() << " saltos.\n";
             break;
         case 4:
-            /*A implementar*/
+            cout << "TOP 5 Roteadores Criticos\n";
+            rede.identificadorRoteadoresCriticos();
             break;
         
         default:
