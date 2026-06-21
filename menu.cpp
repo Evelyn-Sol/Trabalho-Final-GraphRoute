@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "funcoes.cpp"
 
 using namespace std;
@@ -10,18 +11,19 @@ void selecaoFormato(const std::string &tipo, const std::string &nomearquivo){
     cout << "2. Imagem (PNG)\n";
     cout << "3. Documento (PDF)\n";
     cout << "Opcao: "; cin >> formato;
+
+    std::string nomedoarquivo = nomearquivo;
     
     switch (formato){
     case 1:
-        system(("dot -Tx11 " + tipo).c_str());
+        system(("sfdp -Tx11 " + tipo).c_str());
         break;
     case 2:
-        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str());
+        system(("sfdp -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str());
         cout << "Arquivo " << nomearquivo << ".png gerado com sucesso!\n";
         break;
     case 3:
-        system(("dot -Tpdf " + tipo + " -o " + nomearquivo + ".pdf").c_str());
-        //system(("xdg-open " + nomearquivo + ".pdf").c_str()); Precisa mesmo abrir isso aqui?
+        system(("sfdp -Tpdf " + tipo + " -o " + nomearquivo + ".pdf").c_str());
         cout << "Arquivo " << nomearquivo << ".pdf gerado com sucesso!\n";
         break;
     default:
@@ -36,8 +38,8 @@ int main(int argc, char* argv[]){
         return 1; 
     }
 
-    string nome_arquivo;
-    ifstream arq(nome_arquivo = argv[1]);
+    string nome_arquivo = argv[1];
+    ifstream arq(nome_arquivo.c_str());
     if(!arq){
         cout << "Erro: nao foi possivel abrir o arquivo\n"; 
         return 1;
@@ -83,7 +85,7 @@ int main(int argc, char* argv[]){
                 cout << "IP de destino nao encontrado\n";
                 break;
             }
-            auto resultado = rede.shortest_path(origem, destino);//armazena na variavel resultado o shortest_path
+            vector<string> resultado = rede.shortest_path(origem, destino);//armazena na variavel resultado o shortest_path
             if(resultado.empty()){
                 cout << "Nao existe caminho entre os nós\n";
                 break;

@@ -57,7 +57,7 @@ public:
 
         std::ifstream arq(filename); //abre o arquivo passado
         std::unordered_set<std::string> total_vertices; //cria um set 
-        std::set<aresta> arestas;
+        std::unordered_set<std::string> arestas;
 
         std::string linha;
         std::getline(arq, linha); 
@@ -90,7 +90,7 @@ public:
                     total_vertices.insert(endereco_hop_from);
                     total_vertices.insert(endereco_hop_to);
 
-                    arestas.insert({endereco_hop_from, endereco_hop_to});
+                    arestas.insert({endereco_hop_from + "-" + endereco_hop_to});
                 }
             }
         }
@@ -102,7 +102,10 @@ public:
             txt << s << "\n";
         }
         for(const auto& a : arestas){
-            txt << a.first << "\n" << a.second << "\n";
+            size_t posicao = a.find("-");
+            if(posicao != std::string::npos){
+            txt << a.substr(0, posicao) << "\n" << a.substr(posicao + 1) << "\n";
+            }
         }
 
         arq.close();
@@ -249,6 +252,26 @@ public:
         }
         return diametroMaximo;
     }
-
+    void identificadorRoteadoresCriticos(){
+        std::unordered_map<T, int> entrada;
+        std::vector<std::pair<T, int>> rank;
+        for(const auto& [ip, nodo] : grafo){//seta todos os nodos como entrada 0
+            entrada[ip] = 0;
+        }
+        for(const auto& [ip, nodo] : grafo){//incrementa conforme nodo recebe links
+            for(const auto &link : nodo.links){
+                entrada[link->value]++;
+            }
+        }
+        for(const auto& [ip, nodo] : entrada){//insere no vector
+            rank.push_back({ip, nodo});
+        }
+        std::sort(rank.begin(), rank.end(), [](const auto& valorA, const auto& valorB){//sort dos elementos
+            return valorA.second > valorB.second;
+        });
+        for(int i=0; i<5; i++){//imprime os cinco criticos
+            std::cout << i + 1 << ". IP: " << rank[i].first << " | Conexoes de entrada: " << rank[i].second << "\n";
+        }
+    }
 };
 }
