@@ -16,14 +16,14 @@ void selecaoFormato(const std::string &tipo, const std::string &nomearquivo){
     
     switch (formato){
     case 1:
-        system(("sfdp -Tx11 " + tipo).c_str());
+        system(("dot -Tx11 " + tipo).c_str());
         break;
     case 2:
-        system(("sfdp -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str());
+        system(("dot -Tpng " + tipo + " -o " + nomearquivo + ".png").c_str());
         cout << "Arquivo " << nomearquivo << ".png gerado com sucesso!\n";
         break;
     case 3:
-        system(("sfdp -Tpdf " + tipo + " -o " + nomearquivo + ".pdf").c_str());
+        system(("dot -Tpdf " + tipo + " -o " + nomearquivo + ".pdf").c_str());
         cout << "Arquivo " << nomearquivo << ".pdf gerado com sucesso!\n";
         break;
     default:
