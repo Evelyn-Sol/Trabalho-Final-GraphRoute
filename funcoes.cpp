@@ -57,7 +57,7 @@ public:
 
         std::ifstream arq(filename); //abre o arquivo passado
         std::unordered_set<std::string> total_vertices; //cria um set 
-        std::unordered_set<std::string> arestas;
+        std::set<aresta> arestas;
 
         std::string linha;
         std::getline(arq, linha); 
@@ -90,7 +90,7 @@ public:
                     total_vertices.insert(endereco_hop_from);
                     total_vertices.insert(endereco_hop_to);
 
-                    arestas.insert({endereco_hop_from + "-" + endereco_hop_to});
+                    arestas.insert({endereco_hop_from, endereco_hop_to});
                 }
             }
         }
@@ -102,10 +102,7 @@ public:
             txt << s << "\n";
         }
         for(const auto& a : arestas){
-            size_t posicao = a.find("-");
-            if(posicao != std::string::npos){
-            txt << a.substr(0, posicao) << "\n" << a.substr(posicao + 1) << "\n";
-            }
+            txt << a.first << "\n" << a.second << "\n";
         }
 
         arq.close();
