@@ -46,26 +46,26 @@ Agora para a execução, com o .log localizado e o arquivo “funcoes.cpp” na 
 ./menu "nome do arquivo .log"
 
 ## Exemplo de Execução:
-
-$ ./menu input_1.log
-Grafo de roteamento inicializado!
-Vértices únicos (IPs): 342 | Arestas: 812
-======================================================
-1. Exibir Grafo Completo
-2. Encontrar Menor Caminho
-3. Calcular o Diâmetro do Grafo
-4. Identificar Roteadores Críticos
-0. Sair
-======================================================
-Escolha uma opção: 2
-Digite o IP de Origem: 82.66.191.65
-Digite o IP de Destino: 194.149.162.250
-Caminho encontrado (3 saltos):
-82.66.191.65 -> 192.168.3.1 -> 194.149.162.248 -> 194.149.162.250
-Selecione o formato de saída do Graphviz:
-1. Tela
-2. Imagem (PNG)
-3. Documento (PDF)
-Opção: 2
-Arquivo input_1.log.png gerado com sucesso
-
+``` txt
+$ ./menu input_1.log  
+Grafo de roteamento inicializado!  
+Vértices únicos (IPs): 342 | Arestas: 812  
+======================================================  
+1. Exibir Grafo Completo  
+2. Encontrar Menor Caminho  
+3. Calcular o Diâmetro do Grafo  
+4. Identificar Roteadores Críticos  
+0. Sair  
+======================================================  
+Escolha uma opção: 2  
+Digite o IP de Origem: 82.66.191.65  
+Digite o IP de Destino: 194.149.162.250  
+Caminho encontrado (3 saltos):  
+82.66.191.65 -> 192.168.3.1 -> 194.149.162.248 -> 194.149.162.250  
+Selecione o formato de saída do Graphviz:  
+1. Tela  
+2. Imagem (PNG)  
+3. Documento (PDF)  
+Opção: 2  
+Arquivo input_1.log.png gerado com sucesso  
+```
